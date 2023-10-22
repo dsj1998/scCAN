@@ -1,37 +1,32 @@
-function [W, H, S] = Initialize(V, paras,P, MAXITER)
-%cosine distance
-F = size(V,1);
-T = size(V,2);
+function [Q, H, S] = Initialize(V, paras,P, MAXITER)
+
+N = size(V,1); 
+G = size(V,2);
 K = paras(1);
 r = paras(2);
 la1 = paras(3);  
 
 rand('seed',0)
 
-W = 1+rand(F, K);
-
-H = 1+rand(K, T);
-
-%P = zeros(F, T);
-
-%P(V > 0) = 1;
+Q = 1+rand(N, K);
+H = 1+rand(K, G);
 
 for i=1:MAXITER
-    H = H .* (W'*(P.*V))./(W'*(P.*(W*H))+ la1*H +eps);%NMF with miss data
-    W = W .* (P.*V*H')./((P.*(W*H))*H' + la1*W +eps);
+   
+    H = H .* (Q'*(P.*V))./(Q'*(P.*(Q*H))+ la1*H +eps);
+    Q = Q .* (P.*V*H')./((P.*(Q*H))*H' + la1*Q +eps);
 
 end
-S = squareform(1-pdist(W,'cosine'));
-%S = squareform(1./(1+pdist(W,'seuclidean')));
-    
+
+S = squareform(1-pdist(Q,'cosine'));
+
 B=zeros(size(S));
 
 for j=1:size(S,1)
     [val,index] = maxk(S(j,:),r);
+    
     B(j,index(1:r))=val(1:r);
-    %B(j,index(1:r))=ones(1,r);
 end
-
-S=B;    
+S=B;
 S = max(S,S');
 end

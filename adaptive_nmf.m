@@ -1,7 +1,7 @@
 function [X, Q, H, S] = adaptive_nmf(Init, paras)
 
 MAXITER = 1000;
-e = 1e-8;
+err = 1e-5;
 
 
 %---------------init--------------------------
@@ -17,7 +17,7 @@ r = paras(2);
 la1 = paras(3);
 la2 = paras(4);
 %---------------------------------------------
-err = 1e-5;
+
 D1 = diag(sum(S).^-0.5);
 L0 = norm(P.*(V-Q*H),'fro').^2 + la1.*(norm(Q,'fro').^2 + norm(H,'fro').^2)+ la2.*trace(Q'*(D1*(D-S)*D1)*Q);
 for i=1:MAXITER
